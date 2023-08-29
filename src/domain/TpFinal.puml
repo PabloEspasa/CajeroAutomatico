@@ -1,0 +1,84 @@
+@startuml
+!define ENTITY class
+!define TABLE class
+!define PRIMARY_KEY <<PK>>
+!define FOREIGN_KEY <<FK>>
+
+class Account {
+  - numeroDeCuenta: String
+  - nip: String
+  - balance: double
+  + Account(numeroDeCuenta: String, nip: String, balance: double)
+  + getBalance(): double
+  + setBalance(balance: double): void
+  + getAccountNumber(): String
+  + getNip(): String
+  + toString(): String
+}
+
+class ATM {
+  - banco: Banco
+  - scanner: Scanner
+  - cajero: ReposicionCajero
+  + ATM()
+  + ejecutar(): void
+}
+
+class Banco {
+  - cuentas: List<Account>
+  - numeroDeCuentas: int
+  + Banco()
+  + agregarCuenta(cuenta: Account): void
+  + getInstance(): Banco
+  + getNumeroDeCuentas(): int
+  + getCuentas(): List<Account>
+  + setCuentas(cuentas: List<Account>): void
+  + obtenerCuenta(n: String): Account
+}
+
+class ReposicionCajero {
+  - cantidadBilletesDisponibles: int
+  - ultimaRecarga: LocalDateTime
+  + ReposicionCajero()
+  + getCantidadBilletesDisponibles(): int
+  + setCantidadBilletesDisponibles(cantidadBilletesDisponibles: int): void
+  + obtenerCantidadBilletesDisponibles(): int
+  + recargarCajero(): void
+  + configurarRecargaDiaria(): void
+  + getUltimaRecarga(): LocalDateTime
+  + getInstance(): ReposicionCajero
+}
+
+abstract class Transacciones {
+  - numeroDeCuenta: String
+  + Transacciones(numeroDeCuenta: String)
+  + <i>ejecutar()</i>: void 
+  + getNumeroDeCuenta(): String
+}
+
+class Saldo {
+  + Saldo(numeroDeCuenta: String)
+  + ejecutar(): void
+}
+
+class Retirar {
+  - rep1: ReposicionCajero
+  + Retirar(numeroDeCuenta: String)
+  + ejecutar(): void
+  + realizarRetiro(cuenta: Account, monto: int): void
+}
+
+class Depositar {
+  - rep1: ReposicionCajero
+  + Depositar(numeroDeCuenta: String)
+  + ejecutar(): void
+  + realizarDeposito(cuenta: Account, monto: int): void
+}
+
+Account " 1 " *-- " 1   " Banco 
+ATM *-- Banco 
+ReposicionCajero "1" -- "1" ATM  
+Transacciones " 1     " <|-- Saldo
+Transacciones " 1   " <|-- Retirar
+Transacciones " 1 " <|-- Depositar
+@enduml
